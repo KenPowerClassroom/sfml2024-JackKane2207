@@ -6,9 +6,8 @@ int minesweeper()
 {
     int mine = 9;
     srand(time(0));
-
+    int countMines(int, int, int grid[12][12], int);
     RenderWindow app(VideoMode(400, 400), "Minesweeper!");
-
     int tileSize=32;
     int grid[12][12];
     int shownGrid[12][12]; //for showing
@@ -28,17 +27,8 @@ int minesweeper()
     for (int row=1;row<=10;row++)
      for (int column=1;column<=10;column++)//repeats for each tile
       {
-        int mineCounter=0;
-        if (grid[row][column]==mine) continue; //if tile is a mine continue
-        if (grid[row+1][column]== mine) mineCounter++;//checks all tiles for nearby mines, 9 = mine if found increase mine counter for number displayed
-        if (grid[row][column-1]== mine) mineCounter++;
-        if (grid[row -1][column]== mine) mineCounter++;
-        if (grid[row][column -1]== mine) mineCounter++;
-        if (grid[row +1][column +1]== mine) mineCounter++;
-        if (grid[row -1][column -1]== mine) mineCounter++;
-        if (grid[row -1][column +1]== mine) mineCounter++;
-        if (grid[row +1][column -1]== mine) mineCounter++;
-        grid[row][column] = mineCounter;
+         if (countMines(row, column, grid, mine) == -1)continue;
+        grid[row][column] = countMines(row, column, grid, mine);
       }
 
     while (app.isOpen())
@@ -74,4 +64,20 @@ int minesweeper()
     }
 
     return 0;
+}
+
+
+int countMines(int t_row,int t_column,int t_grid[12][12], int t_mine)
+{
+    int mineCounter = 0;
+    if (t_grid[t_row][t_column] == t_mine) return -1; //if tile is a mine return -1
+    if (t_grid[t_row + 1][t_column] == t_mine) mineCounter++;//checks all tiles for nearby mines, 9 = mine if found increase mine counter for number displayed
+    if (t_grid[t_row][t_column - 1] == t_mine) mineCounter++;
+    if (t_grid[t_row - 1][t_column] == t_mine) mineCounter++;
+    if (t_grid[t_row + 1][t_column + 1] == t_mine) mineCounter++;
+    if (t_grid[t_row - 1][t_column - 1] == t_mine) mineCounter++;
+    if (t_grid[t_row - 1][t_column + 1] == t_mine) mineCounter++;
+    if (t_grid[t_row + 1][t_column - 1] == t_mine) mineCounter++;
+    t_grid[t_row][t_column] = mineCounter;
+    return mineCounter;
 }
