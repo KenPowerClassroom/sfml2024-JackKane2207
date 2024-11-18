@@ -8,12 +8,14 @@ int minesweeper()
         MINE = 9,
         FLAG = 11
     };
+
     srand(time(0));
     int countMines(int, int, int grid[12][12], int);
     RenderWindow app(VideoMode(400, 400), "Minesweeper!");
-    int tileSize=32;
-    int grid[12][12];
-    int shownGrid[12][12]; //for showing
+    const int tileSize=32;
+    const int gridSize = 12;
+    int grid[gridSize][gridSize];
+    int shownGrid[gridSize][gridSize]; //for showing
     int mineChance = 5;//1 in 5
     Texture texture;
     texture.loadFromFile("images/minesweeper/tiles.jpg");
