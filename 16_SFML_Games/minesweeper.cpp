@@ -8,64 +8,65 @@ int minesweeper()
 
     RenderWindow app(VideoMode(400, 400), "Minesweeper!");
 
-    int w=32;
+    int tileSize=32;
     int grid[12][12];
     int shownGrid[12][12]; //for showing
 
-    Texture t;
-    t.loadFromFile("images/minesweeper/tiles.jpg");
-    Sprite s(t);
+    Texture texture;
+    texture.loadFromFile("images/minesweeper/tiles.jpg");
+    Sprite sprite(texture);
 
-    for (int i=1;i<=10;i++)
-     for (int j=1;j<=10;j++)
+    for (int row=1; row <=10; row++)
+     for (int column =1; column <=10;column++)
       {
-        shownGrid[i][j]=10;
-        if (rand()%5==0)  grid[i][j]=9;
-        else grid[i][j]=0;
+        shownGrid[row][column]=10;
+        if (rand()%5==0)  grid[row][column]=9;
+        else grid[row][column]=0;
       }
 
-    for (int i=1;i<=10;i++)
-     for (int j=1;j<=10;j++)
+    for (int row=1;row<=10;row++)
+     for (int column=1;column<=10;column++)//repeats for each tile
       {
-        int n=0;
-        if (grid[i][j]==9) continue;
-        if (grid[i+1][j]==9) n++;
-        if (grid[i][j+1]==9) n++;
-        if (grid[i-1][j]==9) n++;
-        if (grid[i][j-1]==9) n++;
-        if (grid[i+1][j+1]==9) n++;
-        if (grid[i-1][j-1]==9) n++;
-        if (grid[i-1][j+1]==9) n++;
-        if (grid[i+1][j-1]==9) n++;
-        grid[i][j]=n;
+        int mineCounter=0;
+        if (grid[row][column]==9) continue; //if tile is a mine continue
+        if (grid[row+1][column]==9) mineCounter++;//checks all tiles for nearby mines, 9 = mine if found increase mine counter for number displayed
+        if (grid[row][column-1]==9) mineCounter++;
+        if (grid[row -1][column]==9) mineCounter++;
+        if (grid[row][column -1]==9) mineCounter++;
+        if (grid[row +1][column +1]==9) mineCounter++;
+        if (grid[row -1][column -1]==9) mineCounter++;
+        if (grid[row -1][column +1]==9) mineCounter++;
+        if (grid[row +1][column -1]==9) mineCounter++;
+        grid[row][column] = mineCounter;
       }
 
     while (app.isOpen())
     {
         Vector2i pos = Mouse::getPosition(app);
-        int x = pos.x/w;
-        int y = pos.y/w;
+        int x = pos.x/tileSize;
+        int y = pos.y/tileSize;
 
-        Event e;
-        while (app.pollEvent(e))
+        Event event;
+        while (app.pollEvent(event))
         {
-            if (e.type == Event::Closed)
+            if (event.type == Event::Closed)
                 app.close();
 
-            if (e.type == Event::MouseButtonPressed)
-              if (e.key.code == Mouse::Left) shownGrid[x][y]=grid[x][y];
-              else if (e.key.code == Mouse::Right) shownGrid[x][y]=11;
+            if (event.type == Event::MouseButtonPressed)
+              if (event.key.code == Mouse::Left) shownGrid[x][y]=grid[x][y];
+              else if (event.key.code == Mouse::Right) shownGrid[x][y]=11;
         }
 
         app.clear(Color::White);
 
-        for (int i=1;i<=10;i++)
-         for (int j=1;j<=10;j++)
+        for (int row=1; row <=10; row++)
+         for (int column =1; column <=10;column++)
           {
-           if (shownGrid[x][y]==9) shownGrid[i][j]=grid[i][j];
-           s.setTextureRect(IntRect(shownGrid[i][j]*w,0,w,w));
-           s.setPosition(i*w, j*w);
-           app.draw(s);
+           if (shownGrid[x][y]==9) 
+               shownGrid[row][column]=grid[row][column];//if mine is found show mine
+           sprite.setTextureRect(IntRect(shownGrid[row][column]*tileSize,0,tileSize,tileSize));
+           sprite.setPosition(row * tileSize, column * tileSize);
+           app.draw(sprite);
           }
 
         app.display();
