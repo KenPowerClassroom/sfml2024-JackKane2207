@@ -4,7 +4,10 @@ using namespace sf;
 
 int minesweeper()
 {
-    int mine = 9;
+    enum MyEnum : int {
+        MINE = 9,
+        FLAG = 11
+    };
     srand(time(0));
     int countMines(int, int, int grid[12][12], int);
     RenderWindow app(VideoMode(400, 400), "Minesweeper!");
@@ -27,8 +30,8 @@ int minesweeper()
     for (int row=1;row<=10;row++)
      for (int column=1;column<=10;column++)//repeats for each tile
       {
-         if (countMines(row, column, grid, mine) == -1)continue;
-        grid[row][column] = countMines(row, column, grid, mine);
+         if (countMines(row, column, grid, MINE) == -1)continue;
+        grid[row][column] = countMines(row, column, grid, MINE);
       }
 
     while (app.isOpen())
@@ -44,16 +47,16 @@ int minesweeper()
                 app.close();
 
             if (event.type == Event::MouseButtonPressed)
-              if (event.key.code == Mouse::Left) shownGrid[x][y]=grid[x][y];
-              else if (event.key.code == Mouse::Right) shownGrid[x][y]=11;
+              if (event.key.code == Mouse::Left) shownGrid[x][y]=grid[x][y];//reveal grid
+              else if (event.key.code == Mouse::Right) shownGrid[x][y]=FLAG;//place flag
         }
 
         app.clear(Color::White);
 
         for (int row=1; row <=10; row++)
-         for (int column =1; column <=10;column++)
+         for (int column =1; column <=10;column++)//drawing
           {
-           if (shownGrid[x][y]== mine)
+           if (shownGrid[x][y]== MINE)
                shownGrid[row][column]=grid[row][column];//if mine is found show mine
            sprite.setTextureRect(IntRect(shownGrid[row][column]*tileSize,0,tileSize,tileSize));
            sprite.setPosition(row * tileSize, column * tileSize);
@@ -71,7 +74,7 @@ int countMines(int t_row,int t_column,int t_grid[12][12], int t_mine)
 {
     int mineCounter = 0;
     if (t_grid[t_row][t_column] == t_mine) return -1; //if tile is a mine return -1
-    if (t_grid[t_row + 1][t_column] == t_mine) mineCounter++;//checks all tiles for nearby mines, 9 = mine if found increase mine counter for number displayed
+    if (t_grid[t_row + 1][t_column] == t_mine) mineCounter++;//checks all tiles (3x3 area) for nearby mines, 9 = mine if found increase mine counter for number displayed
     if (t_grid[t_row][t_column - 1] == t_mine) mineCounter++;
     if (t_grid[t_row - 1][t_column] == t_mine) mineCounter++;
     if (t_grid[t_row + 1][t_column + 1] == t_mine) mineCounter++;
